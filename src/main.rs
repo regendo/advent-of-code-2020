@@ -1,3 +1,5 @@
+use advent_of_code_2020::*;
+
 fn main() {
-    println!("Hello, world!");
+	day01::solve_1();
 }
