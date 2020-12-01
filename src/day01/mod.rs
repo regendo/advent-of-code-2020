@@ -10,8 +10,22 @@ pub fn solve_1() {
 	println!("{} * {} = {}", a, b, a * b);
 }
 
-fn find_2020_combinations(values: &[u32]) -> (u32, u32) {
-	unimplemented!()
+fn find_2020_combinations(values: &[u32]) -> (&u32, &u32) {
+	values
+		.iter()
+		.enumerate()
+		.find_map(|(idx, num)| {
+			if let Some(other) = values
+				.iter()
+				.skip(idx + 1)
+				.find(|other| *num + **other == 2020)
+			{
+				Some((num, other))
+			} else {
+				None
+			}
+		})
+		.expect("No matching pair found!")
 }
 
 #[cfg(test)]
@@ -32,7 +46,7 @@ mod tests {
 			.collect();
 		let (a, b) = find_2020_combinations(&values);
 		assert_eq!(a + b, 2020);
-		assert_eq!((a, b), (1721, 299));
+		assert_eq!((*a, *b), (1721_u32, 299_u32));
 		assert_eq!(a * b, 514579);
 	}
 }
