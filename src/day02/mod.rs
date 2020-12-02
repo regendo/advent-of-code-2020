@@ -1,17 +1,23 @@
-use once_cell::sync as once;
+use once_cell::sync as once_cell;
 use regex;
+use std::iter;
 
 pub fn solve_1() {
 	let pairs = parse_lines(include_str!("input.txt"));
 	let passing = pairs
 		.iter()
-		.filter(|(policy, password)| policy.check(password));
+		.filter(|(policy, password)| policy.check_count(password));
 
-	println!("{} passwords pass their policies.", passing.count());
+	println!("{} passwords pass their old policies.", passing.count());
 }
 
 pub fn solve_2() {
-	unimplemented!()
+	let pairs = parse_lines(include_str!("input.txt"));
+	let passing = pairs
+		.iter()
+		.filter(|(policy, password)| policy.check_pos(password));
+
+	println!("{} passwords pass their new policies.", passing.count());
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
@@ -22,14 +28,21 @@ struct Policy {
 }
 
 impl Policy {
-	pub fn check(&self, password: &str) -> bool {
+	pub fn check_count(&self, password: &str) -> bool {
 		let occurrences = password.chars().filter(|c| *c == self.character).count();
 		self.min <= occurrences && occurrences <= self.max
 	}
+
+	pub fn check_pos(&self, password: &str) -> bool {
+		let chars = iter::once('\0').chain(password.chars());
+		let one = chars.clone().nth(self.min).unwrap() == self.character;
+		let two = chars.clone().nth(self.max).unwrap() == self.character;
+		one != two
+	}
 }
 
-static LINE_REGEX: once::Lazy<regex::Regex> =
-	once::Lazy::new(|| regex::Regex::new(r"(\d+)-(\d+) (\w): (\w+)").unwrap());
+static LINE_REGEX: once_cell::Lazy<regex::Regex> =
+	once_cell::Lazy::new(|| regex::Regex::new(r"(\d+)-(\d+) (\w): (\w+)").unwrap());
 
 fn parse_lines(input: &str) -> Vec<(Policy, &str)> {
 	LINE_REGEX
@@ -75,7 +88,24 @@ mod tests {
 			expected,
 			parse_lines(input)
 				.iter()
-				.map(|(policy, password)| policy.check(password))
+				.map(|(policy, password)| policy.check_count(password))
+				.collect::<Vec<bool>>()
+		)
+	}
+
+	#[test]
+	fn example_2_works() {
+		let input = r"1-3 a: abcde
+1-3 b: cdefg
+2-9 c: ccccccccc";
+
+		let expected = vec![true, false, false];
+
+		assert_eq!(
+			expected,
+			parse_lines(input)
+				.iter()
+				.map(|(policy, password)| policy.check_pos(password))
 				.collect::<Vec<bool>>()
 		)
 	}
