@@ -2,8 +2,8 @@ mod tile;
 
 pub fn solve_1() {
 	let grid = tile::grid(include_str!("input.txt"));
-	let start = tile::Point2D::new(0, 0);
-	let tree_count = tile::traverse(grid, start)
+	let step = tile::Point2D::new(3, 1);
+	let tree_count = tile::traverse(grid, step)
 		.iter()
 		.filter(|&&t| t == tile::Tile::Tree)
 		.count();
@@ -37,9 +37,9 @@ mod tests {
 #...##....#
 .#..#...#.#",
 		);
-		let start = tile::Point2D::new(0, 0);
+		let step = tile::Point2D::new(3, 1);
 
-		let traversed = tile::traverse(grid, start);
+		let traversed = tile::traverse(grid, step);
 		assert_eq!(
 			7,
 			traversed.iter().filter(|&&t| t == tile::Tile::Tree).count()

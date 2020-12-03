@@ -25,9 +25,8 @@ pub fn grid(input: &str) -> Vec<Vec<Tile>> {
 	helpers::grid::<Tile>(input)
 }
 
-pub fn traverse(grid: Vec<Vec<Tile>>, start: Point2D) -> Vec<Tile> {
-	let mut pos = start;
-	let step = Point2D::new(3, 1);
+pub fn traverse(grid: Vec<Vec<Tile>>, step: Point2D) -> Vec<Tile> {
+	let mut pos = Point2D::new(0, 0);
 	let mut yields = vec![];
 
 	pos += step;
