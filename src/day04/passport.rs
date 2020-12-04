@@ -1,8 +1,8 @@
 use once_cell::sync as once_cell;
 use regex;
-use std::{collections::HashMap, convert::TryFrom, error::Error, str::FromStr};
+use std::{collections::HashMap, convert::TryFrom, error::Error};
 
-static KEY_VALUE_PAIR: once_cell::Lazy<regex::Regex> =
+static RE_KEY_VALUE_PAIR: once_cell::Lazy<regex::Regex> =
 	once_cell::Lazy::new(|| regex::Regex::new(r"(?P<key>\w+):(?P<value>[#\d\w]+)\s?").unwrap());
 
 #[allow(dead_code)]
@@ -24,7 +24,7 @@ impl<'a> TryFrom<&'a str> for Passport<'a> {
 	fn try_from(s: &'a str) -> Result<Self, Self::Error> {
 		let keys = vec!["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid", "cid"];
 
-		let vals: HashMap<&str, &str> = KEY_VALUE_PAIR
+		let vals: HashMap<&str, &str> = RE_KEY_VALUE_PAIR
 			.captures_iter(s)
 			.filter_map(|cap| match cap.name("key").map(|m| m.as_str()) {
 				Some(key) if keys.contains(&key) => {
@@ -39,14 +39,15 @@ impl<'a> TryFrom<&'a str> for Passport<'a> {
 			.collect();
 
 		(move || {
+			use crate::day04::validate::*;
 			Ok(Passport {
-				birth_year: u16::from_str(vals.get("byr").ok_or("Missing field 'byr'")?)?,
-				issue_year: u16::from_str(vals.get("iyr").ok_or("Missing field 'iyr'")?)?,
-				expiration_year: u16::from_str(vals.get("eyr").ok_or("Missing field 'eyr'")?)?,
-				height: vals.get("hgt").ok_or("Missing field 'hgt'")?,
-				hair_color: vals.get("hcl").ok_or("Missing field 'hcl'")?,
-				eye_color: vals.get("ecl").ok_or("Missing field 'ecl'")?,
-				passport_id: vals.get("pid").ok_or("Missing field 'pid'")?,
+				birth_year: byr(vals.get("byr"))?,
+				issue_year: iyr(vals.get("iyr"))?,
+				expiration_year: eyr(vals.get("eyr"))?,
+				height: hgt(vals.get("hgt"))?,
+				hair_color: hcl(vals.get("hcl"))?,
+				eye_color: ecl(vals.get("ecl"))?,
+				passport_id: pid(vals.get("pid"))?,
 				// CID is optional
 				// But honestly no idea if this ".cloned" is the correct fix for my lifetime issues.
 				country_id: vals.get("cid").cloned(),

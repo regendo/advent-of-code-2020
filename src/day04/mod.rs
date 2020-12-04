@@ -1,4 +1,5 @@
 mod passport;
+pub mod validate;
 
 pub fn solve_1() {
 	let input = include_str!("input.txt");
@@ -9,8 +10,7 @@ pub fn solve_1() {
 		parsed.iter().filter(|p| p.is_ok()).count(),
 		parsed.len()
 	);
-}
-
-pub fn solve_2() {
-	unimplemented!()
+	for pass in parsed {
+		println!("{:?}", pass);
+	}
 }
