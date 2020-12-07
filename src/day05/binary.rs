@@ -1,4 +1,4 @@
-use helpers::Point2D as Seat;
+pub(crate) use helpers::Point2D as Seat;
 use std::convert::TryFrom;
 
 use crate::helpers;
