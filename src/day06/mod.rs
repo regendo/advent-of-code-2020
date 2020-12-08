@@ -12,7 +12,17 @@ pub fn solve_1() {
 }
 
 pub fn solve_2() {
-	todo!()
+	let input = include_str!("input.txt");
+	let confirms: usize = split_into_groups_2(input)
+		.iter()
+		.map(|group| questions_confirmed_2(group))
+		.map(|chars| chars.len())
+		.sum();
+
+	println!(
+		"The groups confirmed a total of {} questions unanimously.",
+		confirms
+	);
 }
 
 pub(crate) fn split_into_groups(input: &str) -> Vec<String> {
@@ -37,27 +47,32 @@ pub(crate) fn questions_confirmed(group: &str) -> Vec<char> {
 		.collect()
 }
 
+pub(crate) fn split_into_groups_2(input: &str) -> Vec<&str> {
+	#[cfg(unix)]
+	let blankline = "\n\n";
+	#[cfg(windows)]
+	let blankline = "\r\n\r\n";
+
+	input.split(blankline).collect()
+}
+
+pub(crate) fn questions_confirmed_2(input: &str) -> Vec<char> {
+	let mut lines = input.trim().lines();
+	let (first, remainder) = (lines.next().unwrap(), lines);
+	first
+		.chars()
+		.filter(|c| c.is_ascii_alphabetic())
+		.filter(|&c| remainder.clone().all(|line| line.contains(c)))
+		.collect()
+}
+
 #[cfg(test)]
 mod tests {
 	use super::*;
 
 	#[test]
 	fn example_1_works() {
-		let input = r"abc
-
-a
-b
-c
-
-ab
-ac
-
-a
-a
-a
-a
-
-b";
+		let input = include_str!("example_input.txt");
 		let yes_s: Vec<usize> = split_into_groups(input)
 			.iter()
 			.map(|group| questions_confirmed(group))
@@ -65,5 +80,17 @@ b";
 			.collect();
 
 		assert_eq!(vec![3, 3, 3, 1, 1], yes_s);
+	}
+
+	#[test]
+	fn example_2_works() {
+		let input = include_str!("example_input.txt");
+		let yes_s: Vec<usize> = split_into_groups_2(input)
+			.iter()
+			.map(|group| questions_confirmed_2(group))
+			.map(|chars| chars.len())
+			.collect();
+
+		assert_eq!(vec![3, 0, 1, 1, 1], yes_s);
 	}
 }
