@@ -37,12 +37,39 @@ impl Machine {
 		}
 	}
 
-	pub(crate) fn execute_until_first_repeat(&mut self) -> i32 {
+	pub(crate) fn execute_until_first_repeat(&mut self) -> Result<i32, String> {
 		let mut visited = vec![false; self.instructions.len()];
-		while let Some(false) = visited.get(self.instruction_pointer) {
-			*visited.get_mut(self.instruction_pointer).unwrap() = true;
-			self.execute_instruction().unwrap();
+
+		loop {
+			match visited.get_mut(self.instruction_pointer) {
+				Some(false) => {
+					*visited.get_mut(self.instruction_pointer).unwrap() = true;
+					self.execute_instruction()?;
+				}
+				Some(true) => return Ok(self.accumulator),
+				None => return Err("Out of bounds!".to_owned()),
+			}
 		}
-		self.accumulator
+	}
+
+	pub(crate) fn execute_until_end(&mut self) -> Result<i32, String> {
+		match self.execute_until_first_repeat() {
+			Ok(_) => {
+				// Repetition detected, we don't want that.
+				Err("Repeats".to_owned())
+			}
+			Err(_) => {
+				// It didn't loop! But did it terminate correctly?
+				if self.instruction_pointer == self.instructions.len() {
+					Ok(self.accumulator)
+				} else {
+					Err(
+						"Program stopped at instruction {} (should have been {}).",
+						self.instruction_pointer,
+						self.instructions.len(),
+					)
+				}
+			}
+		}
 	}
 }
