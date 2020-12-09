@@ -63,11 +63,11 @@ impl Machine {
 				if self.instruction_pointer == self.instructions.len() {
 					Ok(self.accumulator)
 				} else {
-					Err(
+					Err(format!(
 						"Program stopped at instruction {} (should have been {}).",
 						self.instruction_pointer,
 						self.instructions.len(),
-					)
+					))
 				}
 			}
 		}
