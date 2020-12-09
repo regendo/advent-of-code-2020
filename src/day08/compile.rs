@@ -4,7 +4,7 @@ use std::convert::TryFrom;
 pub(crate) enum Instruction {
 	Accumulate(i32),
 	Jump(i32),
-	Noop,
+	Noop(i32),
 }
 
 impl TryFrom<(&str, i32)> for Instruction {
@@ -14,8 +14,7 @@ impl TryFrom<(&str, i32)> for Instruction {
 		Ok(match value {
 			("acc", val) => Instruction::Accumulate(val),
 			("jmp", val) => Instruction::Jump(val),
-			// We do get at least one (nop, 127) pair. The value is obviously ignored, but apparently valid.
-			("nop", _) => Instruction::Noop,
+			("nop", val) => Instruction::Noop(val),
 			_ => Err(format!("Can't parse {:?} as an instruction!", value))?,
 		})
 	}
@@ -50,7 +49,7 @@ mod tests {
 		let input = include_str!("example_1_input.txt");
 
 		let expected = vec![
-			Noop,
+			Noop(0),
 			Accumulate(1),
 			Jump(4),
 			Accumulate(3),

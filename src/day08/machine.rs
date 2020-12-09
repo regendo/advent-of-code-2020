@@ -16,19 +16,24 @@ impl Machine {
 		}
 	}
 
-	fn execute_instruction(&mut self) {
+	fn execute_instruction(&mut self) -> Result<(), String> {
 		match self.instructions.get(self.instruction_pointer) {
-			Some(Instruction::Noop) => self.instruction_pointer += 1,
+			Some(Instruction::Noop(_)) => {
+				self.instruction_pointer += 1;
+				Ok(())
+			}
 			Some(Instruction::Accumulate(val)) => {
 				self.accumulator += val;
 				self.instruction_pointer += 1;
+				Ok(())
 			}
 			Some(Instruction::Jump(offset)) => {
 				self.instruction_pointer =
 					usize::try_from(i32::try_from(self.instruction_pointer).unwrap() + offset)
-						.unwrap()
+						.unwrap();
+				Ok(())
 			}
-			None => panic!("Out of bounds!"),
+			None => Err("Out of bounds!".to_owned()),
 		}
 	}
 
@@ -36,7 +41,7 @@ impl Machine {
 		let mut visited = vec![false; self.instructions.len()];
 		while let Some(false) = visited.get(self.instruction_pointer) {
 			*visited.get_mut(self.instruction_pointer).unwrap() = true;
-			self.execute_instruction();
+			self.execute_instruction().unwrap();
 		}
 		self.accumulator
 	}
