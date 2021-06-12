@@ -1,11 +1,13 @@
 use itertools::{Itertools, MinMaxResult::MinMax};
 
+use crate::helpers::input;
+
 mod solver;
 
 static PREAMBLE_LENGTH: usize = 25;
 
 pub fn solve_1() {
-	let nums = read_input();
+	let nums: Vec<u64> = input::nums!();
 	if let Some(idx) = (PREAMBLE_LENGTH..nums.len()).find(|idx| !solver::does_some_up(&nums, *idx))
 	{
 		println!(
@@ -18,7 +20,7 @@ pub fn solve_1() {
 }
 
 pub fn solve_2() {
-	let nums = read_input();
+	let nums: Vec<u64> = input::nums!();
 	let wrong_at = (PREAMBLE_LENGTH..nums.len())
 		.find(|idx| !solver::does_some_up(&nums, *idx))
 		.expect("Failed in part 1");
@@ -28,11 +30,4 @@ pub fn solve_2() {
 	} else {
 		panic!("Unexpected minmax result for sequence {:?}.", seq);
 	}
-}
-
-fn read_input() -> Vec<u64> {
-	include_str!("input.txt")
-		.lines()
-		.map(|line| u64::from_str_radix(line.trim(), 10).expect("Unparsable number!"))
-		.collect()
 }
