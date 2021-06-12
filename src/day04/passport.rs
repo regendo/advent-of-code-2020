@@ -28,11 +28,7 @@ impl<'a> TryFrom<&'a str> for Passport<'a> {
 			.captures_iter(s)
 			.filter_map(|cap| match cap.name("key").map(|m| m.as_str()) {
 				Some(key) if keys.contains(&key) => {
-					if let Some(value) = cap.name("value").map(|m| m.as_str()) {
-						Some((key, value))
-					} else {
-						None
-					}
+					cap.name("value").map(|value| (key, value.as_str()))
 				}
 				_ => None,
 			})

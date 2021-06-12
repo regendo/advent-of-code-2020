@@ -15,7 +15,7 @@ impl TryFrom<(&str, i32)> for Instruction {
 			("acc", val) => Instruction::Accumulate(val),
 			("jmp", val) => Instruction::Jump(val),
 			("nop", val) => Instruction::Noop(val),
-			_ => Err(format!("Can't parse {:?} as an instruction!", value))?,
+			_ => return Err(format!("Can't parse {:?} as an instruction!", value)),
 		})
 	}
 }

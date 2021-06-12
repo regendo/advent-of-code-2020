@@ -21,7 +21,7 @@ pub fn find_sum_sequence(data: &[u64], target_idx: usize) -> Option<&[u64]> {
 			match data
 				.get(start..=end)
 				.unwrap()
-				.into_iter()
+				.iter()
 				.sum::<u64>()
 				.cmp(&target)
 			{

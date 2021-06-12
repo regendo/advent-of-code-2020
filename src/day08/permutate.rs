@@ -41,11 +41,7 @@ impl Iterator for Permuter {
 }
 
 fn is_noop_or_jump(instruction: Instruction) -> bool {
-	match instruction {
-		Instruction::Noop(_) => true,
-		Instruction::Jump(_) => true,
-		_ => false,
-	}
+	matches!(instruction, Instruction::Noop(_) | Instruction::Jump(_))
 }
 
 fn swap_instruction(instruction: Instruction) -> Instruction {

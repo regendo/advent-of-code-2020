@@ -2,7 +2,7 @@ pub fn solve_1() {
 	let input = include_str!("input.txt");
 	let values: Vec<_> = input
 		.lines()
-		.map(|line| u32::from_str_radix(line.trim(), 10).unwrap())
+		.map(|line| str::parse(line.trim()).unwrap())
 		.collect();
 
 	let (a, b) = find_2020_combinations_of_2(&values);
@@ -14,7 +14,7 @@ pub fn solve_2() {
 	let input = include_str!("input.txt");
 	let values: Vec<_> = input
 		.lines()
-		.map(|line| u32::from_str_radix(line.trim(), 10).unwrap())
+		.map(|line| str::parse(line.trim()).unwrap())
 		.collect();
 
 	let (a, b, c) = find_2020_combinations_of_3(&values);
@@ -27,15 +27,11 @@ fn find_2020_combinations_of_2(values: &[u32]) -> (&u32, &u32) {
 		.iter()
 		.enumerate()
 		.find_map(|(idx, num)| {
-			if let Some(other) = values
+			values
 				.iter()
 				.skip(idx + 1)
 				.find(|other| *num + **other == 2020)
-			{
-				Some((num, other))
-			} else {
-				None
-			}
+				.map(|other| (num, other))
 		})
 		.expect("No matching pair found!")
 }
@@ -45,22 +41,17 @@ fn find_2020_combinations_of_3(values: &[u32]) -> (&u32, &u32, &u32) {
 		.iter()
 		.enumerate()
 		.find_map(|(first_idx, first_num)| {
-			if let Some((second_num, third_num)) =
-				values
-					.iter()
-					.enumerate()
-					.skip(first_idx)
-					.find_map(|(second_idx, second_num)| {
-						if let Some(third_num) = values
-							.iter()
-							.skip(second_idx + 1)
-							.find(|third_num| *first_num + *second_num + **third_num == 2020)
-						{
-							Some((second_num, third_num))
-						} else {
-							None
-						}
-					}) {
+			if let Some((second_num, third_num)) = values
+				.iter()
+				.enumerate()
+				.skip(first_idx)
+				.find_map(|(second_idx, second_num)| {
+					values
+						.iter()
+						.skip(second_idx + 1)
+						.find(|third_num| *first_num + *second_num + **third_num == 2020)
+						.map(|third_num| (second_num, third_num))
+				}) {
 				Some((first_num, second_num, third_num))
 			} else {
 				None
@@ -83,7 +74,7 @@ mod tests {
 1456";
 		let values: Vec<_> = input
 			.lines()
-			.map(|line| u32::from_str_radix(line.trim(), 10).unwrap())
+			.map(|line| str::parse(line.trim()).unwrap())
 			.collect();
 		let (a, b) = find_2020_combinations_of_2(&values);
 		assert_eq!((*a, *b), (1721_u32, 299_u32));
@@ -101,7 +92,7 @@ mod tests {
 1456";
 		let values: Vec<_> = input
 			.lines()
-			.map(|line| u32::from_str_radix(line.trim(), 10).unwrap())
+			.map(|line| str::parse(line.trim()).unwrap())
 			.collect();
 		let (a, b, c) = find_2020_combinations_of_3(&values);
 		assert_eq!((*a, *b, *c), (979_u32, 366_u32, 675_u32));

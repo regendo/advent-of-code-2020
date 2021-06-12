@@ -18,7 +18,7 @@ impl TryFrom<char> for SplitInstruction {
 			'B' => SplitInstruction::Row(Row::Back),
 			'L' => SplitInstruction::Column(Column::Left),
 			'R' => SplitInstruction::Column(Column::Right),
-			_ => Err(format!("Invalid direction {}.", value))?,
+			_ => return Err(format!("Invalid direction {}.", value)),
 		})
 	}
 }

@@ -15,7 +15,7 @@ static RE_HEIGHT: once_cell::Lazy<regex::Regex> = once_cell::Lazy::new(|| {
 pub fn byr(entry: Option<&&str>) -> Result<u16, &'static str> {
 	if let Some(val) = entry {
 		if let Ok(year) = val.parse() {
-			if year >= 1920 && year <= 2002 {
+			if (1920..=2002).contains(&year) {
 				Ok(year)
 			} else {
 				Err("Invalid byr")
@@ -36,7 +36,7 @@ pub fn byr(entry: Option<&&str>) -> Result<u16, &'static str> {
 pub fn iyr(entry: Option<&&str>) -> Result<u16, &'static str> {
 	if let Some(val) = entry {
 		if let Ok(year) = val.parse() {
-			if year >= 2010 && year <= 2020 {
+			if (2010..=2020).contains(&year) {
 				Ok(year)
 			} else {
 				Err("Invalid iyr")
@@ -57,7 +57,7 @@ pub fn iyr(entry: Option<&&str>) -> Result<u16, &'static str> {
 pub fn eyr(entry: Option<&&str>) -> Result<u16, &'static str> {
 	if let Some(val) = entry {
 		if let Ok(year) = val.parse() {
-			if year >= 2020 && year <= 2030 {
+			if (2020..=2030).contains(&year) {
 				Ok(year)
 			} else {
 				Err("Invalid eyr")
