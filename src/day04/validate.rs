@@ -10,7 +10,7 @@ static RE_HEIGHT: once_cell::Lazy<regex::Regex> = once_cell::Lazy::new(|| {
 /// ```
 ///# use advent_of_code_2020::day04::validate::byr;
 /// assert_eq!(Ok(2002), byr(Some(&"2002")));
-///	assert!(byr(Some(&"2003")).is_err());
+///     assert!(byr(Some(&"2003")).is_err());
 /// ```
 pub fn byr(entry: Option<&&str>) -> Result<u16, &'static str> {
 	if let Some(val) = entry {
@@ -31,7 +31,7 @@ pub fn byr(entry: Option<&&str>) -> Result<u16, &'static str> {
 /// ```
 ///# use advent_of_code_2020::day04::validate::iyr;
 /// assert_eq!(Ok(2020), iyr(Some(&"2020")));
-///	assert!(iyr(Some(&"2023")).is_err());
+///     assert!(iyr(Some(&"2023")).is_err());
 /// ```
 pub fn iyr(entry: Option<&&str>) -> Result<u16, &'static str> {
 	if let Some(val) = entry {
@@ -52,7 +52,7 @@ pub fn iyr(entry: Option<&&str>) -> Result<u16, &'static str> {
 /// ```
 ///# use advent_of_code_2020::day04::validate::eyr;
 /// assert_eq!(Ok(2030), eyr(Some(&"2030")));
-///	assert!(eyr(Some(&"2031")).is_err());
+///     assert!(eyr(Some(&"2031")).is_err());
 /// ```
 pub fn eyr(entry: Option<&&str>) -> Result<u16, &'static str> {
 	if let Some(val) = entry {
